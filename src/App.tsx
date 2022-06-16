@@ -1,5 +1,4 @@
 import { createGlobalStyle, ThemeProvider } from "styled-components";
-import { useRecoilValue } from "recoil";
 import TODOList from "./components/ToDoList";
 
 const GlobalStyle = createGlobalStyle`
