@@ -1,5 +1,6 @@
-import { createGlobalStyle, ThemeProvider } from "styled-components";
-import TODOList from "./components/ToDoList";
+import { createGlobalStyle, ThemeProvider } from 'styled-components';
+import TODOList from './components/ToDoList';
+import { DragDropContext } from 'react-beautiful-dnd';
 
 const GlobalStyle = createGlobalStyle`
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400&display=swap');
@@ -67,11 +68,10 @@ a {
 `;
 
 function App() {
-  
   return (
     <>
       <GlobalStyle />
-      <TODOList/>
+      <TODOList />
     </>
   );
 }
