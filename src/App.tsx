@@ -1,5 +1,8 @@
-import { createGlobalStyle } from 'styled-components';
-import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+import styled, { createGlobalStyle } from 'styled-components';
+import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
+import { useRecoilState } from 'recoil';
+import { toDoState } from './atoms';
+import DraggableCard from './Components/DraggableCard';
 
 const GlobalStyle = createGlobalStyle`
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400&display=swap');
@@ -66,26 +69,65 @@ a {
 }
 `;
 
+const Wrapper = styled.div`
+  display: flex;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+`;
+
+const Boards = styled.div`
+  display: grid;
+  width: 100%;
+  /* grid-template-columns: repeat(1, 1fr); */
+  grid-template-columns: repeat(3, 1fr);
+`;
+
+const Board = styled.div`
+  padding: 20px 10px;
+  padding-top: 30px;
+  background-color: ${(props) => props.theme.boardBgColor};
+  border-radius: 5px;
+`;
+
 function App() {
-  const onDragEnd = () => {};
+  const [toDos, setToDos] = useRecoilState(toDoState);
+  const onDragEnd = ({ draggableId, destination, source }: DropResult) => {
+    if (destination?.index === undefined) return;
+
+    setToDos((oldToDos) => {
+      const toDosCopy = [...oldToDos];
+      toDosCopy.splice(source.index, 1);
+      toDosCopy.splice(destination?.index, 0, draggableId);
+      return toDosCopy;
+    });
+  };
   return (
     <>
       <GlobalStyle />
+
       <DragDropContext onDragEnd={onDragEnd}>
-        <div>
-          <Droppable droppableId="one">
-            {() => (
-              <ul>
-                <Draggable draggableId="first" index={0}>
-                  {() => <li>1</li>}
-                </Draggable>
-                <Draggable draggableId="second" index={1}>
-                  {() => <li>2</li>}
-                </Draggable>
-              </ul>
-            )}
-          </Droppable>
-        </div>
+        <Wrapper>
+          <Boards>
+            <Droppable droppableId="one">
+              {(provided) => (
+                <Board ref={provided.innerRef} {...provided.droppableProps}>
+                  {toDos.map((toDo, index) => (
+                    <DraggableCard
+                      key={toDo}
+                      index={index}
+                      toDo={toDo}
+                    ></DraggableCard>
+                  ))}
+                  {provided.placeholder}
+                </Board>
+              )}
+            </Droppable>
+          </Boards>
+        </Wrapper>
       </DragDropContext>
     </>
   );
