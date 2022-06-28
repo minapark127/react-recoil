@@ -3,10 +3,24 @@ import styled from 'styled-components';
 import DraggableCard from './DraggableCard';
 
 const Wrapper = styled.div`
-  padding: 20px 10px;
-  padding-top: 30px;
-  background-color: ${(props) => props.theme.boardBgColor};
+  padding: 12px 0 0;
+  border: 1px solid ${(props) => props.theme.boardBgColor};
   border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+`;
+
+const Area = styled.div<{ isDraggingOver: boolean }>`
+  flex: 1;
+  background-color: ${(props) =>
+    props.isDraggingOver ? props.theme.boardBgColor : ''};
+`;
+
+const Title = styled.p`
+  font-size: 1.2em;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 12px;
 `;
 
 interface IBoardProps {
@@ -16,16 +30,28 @@ interface IBoardProps {
 
 function Board({ toDos, boardId }: IBoardProps) {
   return (
-    <Droppable droppableId={boardId}>
-      {(provided) => (
-        <Wrapper ref={provided.innerRef} {...provided.droppableProps}>
-          {toDos.map((toDo, index) => (
-            <DraggableCard key={toDo} index={index} toDo={toDo}></DraggableCard>
-          ))}
-          {provided.placeholder}
-        </Wrapper>
-      )}
-    </Droppable>
+    <Wrapper>
+      <Title>{boardId}</Title>
+
+      <Droppable droppableId={boardId}>
+        {(provided, snapshot) => (
+          <Area
+            isDraggingOver={snapshot.isDraggingOver}
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+          >
+            {toDos.map((toDo, index) => (
+              <DraggableCard
+                key={toDo}
+                index={index}
+                toDo={toDo}
+              ></DraggableCard>
+            ))}
+            {provided.placeholder}
+          </Area>
+        )}
+      </Droppable>
+    </Wrapper>
   );
 }
 

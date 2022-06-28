@@ -5,5 +5,5 @@ export const lightTheme: DefaultTheme = {
   textColor: '#35414e',
   accentColor: '#9c88ff',
   cardBgColor: 'white',
-  boardBgColor: '#e9e8eb',
+  boardBgColor: '#d8d8d8',
 };
